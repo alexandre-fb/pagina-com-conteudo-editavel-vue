@@ -13,38 +13,10 @@
                 <h3>Edite o botão no campo abaixo</h3>
                 <input type="text" name="editButton" id="editButton" v-model="buttonContent" >
             </div>
-            <button style='margin-top: 50px;' @click="getHtml" >Salvar</button>
+            <button style='margin-top: 50px;' @click="getHtml" v-if="showInputEditTitle || showInputEditButton">Salvar</button>
         </div>
 
-        <table id="table-content" border="1" align="center" cellpadding="0" cellspacing="0" width="100%">
-            <tr>
-                <td>
-                    <table border="1" align="center" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-
-                        <tr class="logo-section" :style="logoSection.tr.style">
-                            <td align="center" :style="logoSection.td.style">
-                                <img :src="logoSection.td.logoImageUrl" alt="" srcset="">
-                            </td>
-                        </tr>
-
-                        <tr class="banner-section" :style="bannerSection.tr.style">
-                            <td align="center" height="300px" :style="bannerSection.td.style">{{ bannerSection.td.content }}</td>
-                        </tr>
-                        <tr>
-                            <td>apresentação</td>
-                        </tr>
-                        <tr>
-                            <td>Lista</td>
-                        </tr>
-                        <tr>
-                            <td>Footer</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-
-        <!-- <div class="layout-container"
+        <div class="layout-container"
             :style="{ 
                 width: '100%',
                 maxWidth: '800px',
@@ -116,7 +88,7 @@
                 </section>
             </main>
             <footer class="footer"></footer>
-        </div> -->
+        </div>
     </div>
   </div>
 </template>
@@ -127,37 +99,6 @@ export default {
     data() {
         return {
             html: null,
-            logoSection: {
-                tr: {
-                    style: {
-                        backgroundColor: '#27283f', 
-                    }
-                }, 
-                td: {
-                    logoImageUrl: 'https://homolog.pinceisatlas.com.br/public/files/69idqhvQF6hy5rGWe9OckElmk8uQz4huPAOup6nX.png',
-                    style: {
-                        padding: '20px',
-                    }
-                },
-            },
-            bannerSection: {
-                tr: {
-                    bgImageUrl: 'https://raw.githubusercontent.com/alexandre-fb/pagina-com-conteudo-editavel-vue/main/src/assets/header-panel.png',
-                    style: {
-                        backgroundImage: 'url(https://raw.githubusercontent.com/alexandre-fb/pagina-com-conteudo-editavel-vue/main/src/assets/header-panel.png)', 
-                        backgroundSize: 'cover', 
-                        backgroundColor: '#D9D9D9',
-                    }
-                }, 
-                td: {
-                    content: 'Título',
-                    style: {
-                        color: '#fff',
-                        fontSize: '38px',
-                    },
-                },
-            } ,
-            ////========================
             header: {
                 style: { 
                     display: 'flex', 
@@ -228,7 +169,7 @@ export default {
     },
     methods: {
         getHtml() {
-            this.html = document.getElementById('table-content')
+            this.html = document.getElementsByClassName('layout-container')[0]
             console.log(this.html)
         },
         showEditTitleButton(event) {

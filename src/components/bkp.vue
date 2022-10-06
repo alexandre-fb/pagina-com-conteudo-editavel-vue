@@ -2,21 +2,9 @@
   <div>
     <h1>Layout 1</h1>
 
-    <div class="layout-container" 
-         style="width: 100%;
-                max-width: 800px;
-                margin: 0 auto;
-                height: 1200px;"
-    >
-        <header class="header"
-                style="display: flex;">
-
-            <img src="../../src/assets/header-panel.png" 
-                 alt="powerteck-banner" 
-                 class="header__image"
-                 style="width: 100%;
-                        object-fit: cover;"
-            >
+    <div class="layout-container">
+        <header class="header">
+            <img src="../../src/assets/header-panel.png" alt="powerteck-banner" class="header__image">
         </header>
         <main class="main">
             <section class="main__section main__section--machine-line">
@@ -25,8 +13,7 @@
                 <button class="button button--seemore">Clique aqui e saiba mais</button>
             </section>
 
-            <section class="main__section main__section-products-list"
-                style="">
+            <section class="main__section main__section-products-list">
                 <h2 class="section__title section__title--products-list">Conheça nossa linha completa de máquinas</h2>
 
                 <article class="product-item">
