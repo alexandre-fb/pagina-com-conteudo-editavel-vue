@@ -14,11 +14,24 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+  
+
+
+}
+*, html, body {
+    box-sizing: border-box;
+  }
+
+body {
+  margin: 0;
+  box-sizing: border-box;
+}
 
     h1, h2, h3, h4, h5 {
     margin: 0px;
   }
-}
+
+
 
 nav {
   padding: 30px;
