@@ -24,7 +24,7 @@
                         </div>
 
                         <div class="section__input-item">
-                            <label for="input-color-tertiary" class="input-item__label">Cor Terciária:</label>
+                            <label for="input-color-tertiary" class="input-item__label">Cor terciária:</label>
                             <input type="color" name="input-color" id="input-color-tertiar" class="input-color" v-model="tertiaryColor">
                         </div>
                         
@@ -85,13 +85,28 @@
 
                         </div>
                     </div>
+                </div>
+
+                <div class="editor-area__section editor-area__section--header" v-else-if="activeEditor === 'productsListSection'" key="logo-section">
+                    <h3 class="section__title">Lista de produtos</h3>
+                    <div class="section__inputs-container">
+                        
+                        <div class="section__input-item">
+                            <label for="input-text-products-list-title" class="input-item__label">Editar título:</label>
+                            <input type="text" name="input-text-products-list-title" id="input-text-products-list-title" class="input-text" v-model="productsListSection.title.content">
+                        </div>
+
+                        <div class="section__input-item" v-for="product in productsListSection.productsList" :key="product.id">
+                            <label for="input-text-products-list-title" class="input-item__label">{{`Nome do produto ${product.id}:`}}</label>
+                            <input type="text" name="input-text-products-list-title" id="input-text-products-list-title" class="input-text" v-model="productsListSection.productsList[product.id - 1].productData.name">
+                        </div>
+                    </div>
                 </div>      
             </transition>
         </div>
 
-        <div class="email-layout-container">
-
-            <table class="email-layout" id="email-layout" border="0" align="center" cellpadding="0" cellspacing="0" width="100%">
+        <div class="email-layout-container" id="email-layout">
+            <table class="email-layout" border="0" align="center" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                     <td>
                         <table align="center" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
@@ -163,68 +178,65 @@
                                     </div>
                                 </transition>
                             </tr>
-                            <tr>
+                            <tr @mouseover="handleProductsListSectionInteraction" @mouseleave="handleProductsListSectionInteraction">
                                 <td>
                                     <table class="products-list-section" 
-                                        :style="productsListSection.table.style">
+                                        :style="productsListSection.table.style"
+                                        
+                                    >
                                         <tr class="products-list-section__title">
                                             <h2 :style="productsListSection.title.style">
                                                 {{ productsListSection.title.content }}
                                             </h2>
-                                            <transition name="fade">
-                                                <div class="edit-box" @click="handleBannerSectionInteraction" v-if="showEditBannerSectionButton || activeEditor === 'bannerSection'">
-                                                    <i class="edit-icon">
-                                                        <EditIcon />
-                                                    </i>
-                                                </div>
-                                            </transition>
                                         </tr> 
                                         <tr>
                                             <table>
                                                 <tr 
                                                     class="products-list-section__product-item"
-                                                    v-for="item in productsListSection.productsList" :key="item.id"
-                                                    :style="item.id % 2 !== 0 ? productsListSection.styles.productItem : productsListSection.styles.productItemReverse">
+                                                    v-for="product in productsListSection.productsList" :key="product.id"
+                                                    :style="product.id % 2 !== 0 ? productsListSection.styles.productItem : productsListSection.styles.productItemReverse">
                                                     <td class="product-item__image" width="100%">
                                                         <img 
                                                             class="product-item__image" 
-                                                            :src="item.image.url" 
-                                                            :alt="item.image.alt"
+                                                            :src="product.image.url" 
+                                                            :alt="product.image.alt"
                                                             :style="productsListSection.styles.image"
                                                         >
                                                     </td>
                                                     <td class="product-item__data" width="100%"> 
                                                         <div>
                                                             <h3 class="product-item__title" :style="productsListSection.styles.productName">
-                                                                {{ item.productData.name }}
+                                                                {{ product.productData.name }}
                                                             </h3>
                                                             <h4 class="product-item__code" :style="productsListSection.styles.productCode">
-                                                                {{item.productData.code}}
+                                                                {{product.productData.code}}
                                                             </h4>
                                                         </div>
                                                         <p class="product-item__decription" :style="productsListSection.styles.productDescription">
-                                                            {{item.productData.description}}
+                                                            {{product.productData.description}}
                                                         </p>
                                                         <a 
                                                             class="product-item__link" 
-                                                            :href="item.productData.link.url"
+                                                            :href="product.productData.link.url"
                                                             target="_blank"
                                                             :style="productsListSection.styles.productLink"
                                                         >
-                                                            {{item.productData.link.text}}
+                                                            {{product.productData.link.text}}
                                                         </a>
                                                     </td>
-                                                    <transition name="fade">
-                                                        <div class="edit-box" @click="handleBannerSectionInteraction" v-if="showEditBannerSectionButton || activeEditor === 'bannerSection'">
-                                                            <i class="edit-icon">
-                                                                <EditIcon />
-                                                            </i>
-                                                        </div>
-                                                    </transition>
                                                 </tr>
                                             </table>
-                                        </tr> 
-                                    </table>  
+                                        </tr>
+
+                                    </table> 
+                                    <transition name="fade">
+                                        <div class="edit-box" @click="handleProductsListSectionInteraction" 
+                                        v-if="showEditProductsListSectionButton || activeEditor === 'productsListSection'">
+                                            <i class="edit-icon">
+                                                <EditIcon />
+                                            </i>
+                                        </div>
+                                    </transition> 
                                 </td>
                             </tr>
 
@@ -270,10 +282,10 @@
 </template>
 
 <script>
-import EditIcon from '../assets/icons/edit-icon.vue'
-import FacebookIcon from '../assets/icons/facebook-icon.vue'
-import InstagramIcon from '../assets/icons/instagram-icon.vue'
-import YoutubeIcon from '../assets/icons/youtube-icon.vue'
+import EditIcon from './icons/edit-icon.vue'
+import FacebookIcon from './icons/facebook-icon.vue'
+import InstagramIcon from './icons/instagram-icon.vue'
+import YoutubeIcon from './icons/youtube-icon.vue'
 
 export default {
     name: 'Layout-1',
@@ -381,7 +393,7 @@ export default {
                     style: {
                         padding: '20px',
                         color: '#EB4041', 
-                        fontSize: '28px', 
+                        fontSize: 28, 
                         fontStyle: 'italic',
                         textAlign: 'center',
                         margin: '0',
@@ -409,13 +421,15 @@ export default {
                         color: '#27283f',
                         fontWeight: '600',
                         textTransform: 'uppercase',
-                        fontSize: '18px',   
+                        fontSize: '18px',
+                        margin: '0',   
                     },
                     productCode: {
                         color: '#27283f',
                         fontWeight: '600',
                         textTransform: 'uppercase',
                         fontSize: '16px',
+                        margin: '0', 
                     },
                     productDescription: {
                         color: '#333',
@@ -483,6 +497,7 @@ export default {
             showEditLogoSectionButton: false,
             showEditBannerSectionButton: false,
             showEditDescriptionSectionButton: false,
+            showEditProductsListSectionButton: false,
             activeEditor: '',
         }
     },
@@ -539,6 +554,15 @@ export default {
                 this.showEditDescriptionSectionButton = false
             } else if (event.type === 'click') {
                 this.activeEditor = 'descriptionSection' 
+            }            
+        },
+        handleProductsListSectionInteraction(event) {
+            if (event.type === 'mouseover') {
+                this.showEditProductsListSectionButton = true
+            } else if (event.type === 'mouseleave') {
+                this.showEditProductsListSectionButton = false
+            } else if (event.type === 'click') {
+                this.activeEditor = 'productsListSection' 
             }            
         },
     }
@@ -673,7 +697,7 @@ tr {
                     margin-top: 10px;
                 }
 
-                .input-url, .input-text, .text-area {
+                .input-url, .input-text, .text-area, .input-number {
                     border: none;
                     padding: 10px;
                     margin-top: 10px;
@@ -686,7 +710,6 @@ tr {
             }
         }
     }
-    
 
     .email-layout-container {
         width: 100%;
@@ -695,98 +718,8 @@ tr {
         padding: 30px;
         background-color: #f0f0f0;
         
-    
         .email-layout {
             width: 100%;
-        }
-    }
-}
-
-.layout-container {
-    height: 100%;
-    max-height: 90vh;
-    overflow-y: scroll;
-    background-color: #fff;
-    
-
-    .main__section {
-        padding: 20px;
-
-        .section__title {
-            color: #EB4041; 
-            font-size: 38px; 
-            font-style: italic;
-        }
-
-        .section__paragraph {
-            color: #000; 
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .product-item {
-            padding: 20px 0;
-            border-bottom: 1px solid lightgray;
-            margin-top: 20px;
-            display: flex;
-            gap: 30px;
-            
-            &:last-child {
-                border-bottom: none;
-            }
-            .product-item__image {
-                height: min-content;
-            }
-
-            .product-item__data-container {
-                text-align: left;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                gap: 10px;
-
-                .product-item__title {
-                    font-size: 20px;
-                    text-transform: uppercase;
-                }
-
-                .product-item__decription {
-                    margin: 0;
-                }
-
-                .product-item__link {
-                    color: #EB4041;
-                    text-decoration: none;
-                    text-transform: uppercase;
-                    font-weight: 600;
-                    font-size: 18px;
-                }
-            }
-        }
-
-        .product-item--reverse-direction {
-            flex-direction: row-reverse;
-
-            .product-item__data-container {
-                text-align: right;
-            } 
-        }
-    }
-
-    .section--machine-line {
-        
-        .button--seemore {
-            position: absolute;
-            left: 50%;
-            transform: translate(-50%)
-        }
-    }
-
-    .main__section-products-list {
-        padding-top: 50px;
-
-        .section__title--products-list {
-            font-size: 32px;
         }
     }
 }
