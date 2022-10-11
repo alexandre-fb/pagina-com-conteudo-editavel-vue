@@ -1,81 +1,92 @@
 <template>
   <div>
-    <div class="container-editor">
-        <div class="editor-area-container">
-            <div class="editor-area">
-                <h2 class="edit-area__title">Área de edição</h2>
-                <div class="edit-area__content-container">
+    <div class="container-mail-editor">
 
-                    <transition name="fade" mode="out-in">
-                        <p v-if="!activeEditor" key="empty-editor">Selecione uma das seções para editar..</p>
-                   
-                        <div class="editor editor--logo-section" v-else-if="activeEditor === 'logoSection'" key="logo-section">
-                            <div class="editor__inputs-container">
-                                <div class="editor__input-area">
-                                    <h3 class="input-area__title">Cor de fundo</h3>
-                                    <div class="input-area__input-item">
-                                        <label for="color-title-logo-section" class="input-item__label input-item__label--color">Selecione a cor:</label>
-                                        <input type="color" name="color-title-banner-section" id="color-title-logo-section" v-model="logoSection.tr.style.backgroundColor">
-                                    </div>
-                                </div>
-                            </div>
+        <div class="editor-area">
+            <div class="editor-area__header">
+                <h2 class="editor-area__title">Área de edição</h2>
+                <button class=" button-default save-template-button" @click="getHtml">Salvar template</button>
+            </div>
+
+            <transition name="fade" mode="out-in">
+                <div class="editor-area__section editor-area__section--colors" v-if="activeEditor === ''" key="colors-section">
+                    <h3 class="section__title">Cores</h3>
+                    <div class="section__inputs-container">
+                        
+                        <div class="section__input-item">
+                            <label for="input-color-header" class="input-item__label">Cor primária:</label>
+                            <input type="color" name="input-color-header" id="input-color-header" class="input-color" v-model="primaryColor">
                         </div>
 
-                        <div class="editor editor--banner-section" v-else-if="activeEditor === 'bannerSection'" key="banner-section">
-                            <div class="editor__inputs-container">
-                                <div class="editor__section-area">
-                                    <h3 class="section-area__title">Imagem destaque</h3>
-                                     <div class="editor__input-area">
-                                        <div class="input-area__input-item">
-                                            <label for="bg-image-banner-section" class="input-item__label">Editar imagem:</label>
-                                            <p class="input-item__description">Insira o link da imagem no campo abaixo.</p>
-                                            <input type="url" name="bg-image-banner-section" id="bg-image-banner-section" class="input-item__input" v-model="bannerSection.tr.bgImageUrl">
-                                            <button class="input-item__button" @click="handleChangeBannerBgImage">Adicionar</button>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="section__input-item">
+                            <label for="input-color-primary" class="input-item__label">Cor secundária:</label>
+                            <input type="color" name="input-color" id="input-color-primary" class="input-color" v-model="secondaryColor">
+                        </div>
+
+                        <div class="section__input-item">
+                            <label for="input-color-tertiary" class="input-item__label">Cor Terciária:</label>
+                            <input type="color" name="input-color" id="input-color-tertiar" class="input-color" v-model="tertiaryColor">
+                        </div>
+                        
+                    </div>
+                </div>
+                   
+                <div class="editor-area__section editor-area__section--header" v-else-if="activeEditor === 'logoSection'" key="logo-section">
+                    <h3 class="section__title">Cabeçalho</h3>
+                    <div class="section__inputs-container">
+                        
+                        <div class="section__input-item">
+                            <label for="input-color" class="input-item__label">Selecione a cor:</label>
+                            <input type="color" name="input-color" id="input-color" class="input-color" v-model="logoSection.tr.style.backgroundColor">
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="editor-area__section editor-area__section--banner" v-else-if="activeEditor === 'bannerSection'" key="banner-section">
+                    <h3 class="section__title">Imagem destaque</h3>
+                    <div class="section__inputs-container">
+                       
+                        <div class="section__input-item">
+                            <div class="input-area__input-item">
+                                <label for="input-url-banner" class="input-item__label">Editar imagem:</label>
+                                <p class="input-item__description">Insira o link da imagem no campo abaixo.</p>
+                                <input type="url" name="input-url-banner" id="input-url-banner" class="input-url" v-model="bannerSection.tr.bgImageUrl">
+                                <button class="button-default" @click="handleChangeBannerBgImage">Adicionar</button>
                             </div>
                         </div>
                         
-                        <div class="editor editor--description-section" v-else-if="activeEditor === 'descriptionSection'" key="description-section">
-                            <div class="editor__inputs-container">
-                                <div class="editor__section-area">
-                                    <h3 class="section-area__title">Texto destaque</h3>
-                                    <div class="editor__input-area">
-                                        <div class="input-area__input-item">
-                                            <label for="title-description-section" class="input-item__label">Editar título:</label>
-                                            <input type="text" name="title-description-section" id="title-descriptionr-section" class="input-item__input" v-model="descriptionSection.td.title.content">
-                                        </div>
-                                    </div>
-
-                                    <div class="editor__input-area">
-                                        <div class="input-area__input-item">
-                                            <label for="paragraph-description-section" class="input-item__label">Editar texto:</label>
-                                            <textarea rows="10"  name="paragraph-description-section" id="paragraph-description-section" class="input-item__input" v-model="descriptionSection.td.paragraph.content" />
-                                        </div>
-                                    </div>
-
-                                    <div class="editor__input-area">
-                                        <div class="input-area__input-item">
-                                            <label for="text-button-description-section" class="input-item__label">Editar texto do botão:</label>
-                                            <input type="text" name="text-button-description-section" id="text-button-description-section" class="input-item__input" v-model="descriptionSection.td.button.content">
-                                        </div>
-                                    </div>
-
-                                    <div class="editor__input-area">
-                                        <div class="input-area__input-item">
-                                            <label for="link-button-description-section" class="input-item__label">Editar link do botão:</label>
-                                            <input type="url" name="link-button-description-section" id="link-button-description-section" class="input-item__input" v-model="descriptionSection.td.button.link">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </transition>
+                    </div>
                 </div>
+                        
+                <div class="editor-area__section editor-area__section-description" v-else-if="activeEditor === 'descriptionSection'" key="description-section">
+                    <h3 class="section__title">Descrição</h3>
+                    <div class="section__inputs-container">
 
-                <button class="save-template-button" style='margin-top: 50px;' @click="getHtml" >Salvar template</button>
-            </div>
+                        <div class="section__input-item">
+                            <label for="input-text-description-title" class="input-item__label">Editar título:</label>
+                            <input type="text" name="input-text-description-title" id="input-text-description-title" class="input-text" v-model="descriptionSection.td.title.content">
+                        </div>
+
+                        <div class="section__input-item">
+                            <label for="input-text-description-text" class="input-item__label">Editar texto:</label>
+                            <textarea rows="7"  name="input-text-description-text" id="input-text-description-text" class="text-area" v-model="descriptionSection.td.paragraph.content" />
+                        </div>
+
+                        <div class="section__input-item">
+                            <label for="input-text-description-button-text" class="input-item__label">Editar texto do botão:</label>
+                            <input type="text" name="input-text-description-button-text" id="input-text-description-button-text" class="input-text" v-model="descriptionSection.td.button.content">
+                        </div>
+
+                        <div class="section__input-item">
+
+                            <label for="input-text-description-button-link" class="input-item__label">Editar link do botão:</label>
+                            <input type="url" name="input-text-description-button-link" id="input-text-description-button-link" class="input-url" v-model="descriptionSection.td.button.link">
+
+                        </div>
+                    </div>
+                </div>      
+            </transition>
         </div>
 
         <div class="email-layout-container">
@@ -85,21 +96,22 @@
                     <td>
                         <table align="center" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
 
-                            <tr class="logo-section" 
+                            <tr class="logo-section" :style="logoSection.tr.style">
+                            <!-- <tr class="logo-section" 
                                 :style="logoSection.tr.style"
                                 @mouseover="handleLogoSectionInteraction" 
                                 @mouseleave="handleLogoSectionInteraction"
-                                >
+                            > -->
                                 <td align="center" :style="logoSection.td.style">
                                     <img :src="logoImageUrl" alt="Logo Atlas">
                                 </td>
-                                <transition name="fade">
+                                <!-- <transition name="fade">
                                     <div class="edit-box" @click="handleLogoSectionInteraction" v-if="showEditLogoSectionButton || activeEditor === 'logoSection'">
                                         <i class="edit-icon">
                                             <EditIcon />
                                         </i>
                                     </div>
-                                </transition>
+                                </transition> -->
                             </tr>
 
                             <tr class="banner-section" 
@@ -269,6 +281,9 @@ export default {
     data() {
         return {
             html: null,
+            primaryColor: '#27283f',
+            secondaryColor: '#EB4041',
+            tertiaryColor: '#cccccc',
             logoImageUrl: 'https://homolog.pinceisatlas.com.br/public/files/69idqhvQF6hy5rGWe9OckElmk8uQz4huPAOup6nX.png',
             logoSection: {
                 tr: {
@@ -408,10 +423,10 @@ export default {
                     },
                     productLink: {
                         color: '#EB4041',
-                                    textDecoration: 'none',
-                                    textTransform: 'uppercase',
-                                    fontWeight: '600',
-                                    fontSize: '18px',
+                        textDecoration: 'none',
+                        textTransform: 'uppercase',
+                        fontWeight: '600',
+                        fontSize: '18px',
                     },
                 },
                 productsList: [
@@ -471,12 +486,22 @@ export default {
             activeEditor: '',
         }
     },
+    updated () {
+        this.logoSection.tr.style.backgroundColor = this.primaryColor
+        this.footerSection.style.backgroundColor = this.primaryColor
+        this.descriptionSection.td.title.style.color = this.secondaryColor
+        this.descriptionSection.td.button.style.backgroundColor = this.secondaryColor
+        this.productsListSection.title.style.color = this.secondaryColor
+        this.productsListSection.styles.productLink.color = this.secondaryColor
+        this.productsListSection.styles.productName.color = this.primaryColor
+        this.productsListSection.styles.productCode.color = this.primaryColor
+        this.descriptionSection.tr.style.backgroundColor = this.tertiaryColor
+    },
     methods: {
         getHtml() {
             this.activeEditor = ''
             this.html = document.getElementById('email-layout')
             console.log(this.html)
-             
         },
         showEditTitleButton(event) {
             console.log(event)
@@ -530,6 +555,8 @@ export default {
 }
 //=====end transitions
 
+//=====start edit box in section hover
+
 .edit-box {
     position: absolute;
     right: 0px;
@@ -543,6 +570,7 @@ export default {
     align-items: flex-start;
     cursor: pointer;
     box-shadow: 0 0 10px #000;
+    z-index: 5;
 
     .edit-icon {
         background-color: #fff;
@@ -557,19 +585,15 @@ export default {
         box-shadow: 0 0 5px rgb(196, 196, 196);
         padding: 5px;
     }
-
-        img {
-            height: 70%;
-            transition: 300ms ease;
-        }
 }
+//=====end edit box in section hover
 
 tr {
     position: relative;
 }
 
-button {
-    padding: 5px 10px;
+.button-default {
+    padding: 10px 15px;
     margin-top: 15px;
     background-color: rgb(0, 143, 215);
     color: #fff;
@@ -582,115 +606,87 @@ button {
     }
 }
 
-.container-editor {
+.container-mail-editor {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
     height: 100vh;
 
-    .editor-area-container {
-        width: 400px;
-    
-        .editor-area {
-            height: 100vh;
-            min-width: 250px;
-            background-color: rgb(249, 249, 249);
+    .editor-area {
+        width: 450px;
+        height: 100%;
+        max-height: 100vh;
+        min-width: 250px;
+        background-color: rgb(249, 249, 249);
+        padding: 20px;
+        position: relative;
+        overflow-y: scroll;
+
+        .editor-area__header {
             padding: 20px;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-bottom: 1px solid lightgrey;
+            margin-bottom: 40px;
+
+            .editor-area__title {
+                text-align: center;
+                font-size: 22px;
+            }
 
             .save-template-button {
                 width: 100%;
                 margin: 20px 0;
             }
-
-            .edit-area__title {
-                text-align: center;
-                font-size: 22px;
+        
+            .section__title {
+                font-weight: 600;
             }
+        }
 
-            .edit-area__content-container {
-                .edit-content__title {
-                    font-weight: 400;
+        .section__inputs-container {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+
+            .section__input-item {
+                padding: 35px;
+                display: flex;
+                flex-direction: column;
+                border: 1px solid rgb(240, 240, 240);
+                transition: 300ms ease;
+
+                &:hover {
+                    border-top: 1px solid rgb(144, 144, 144);
+                    border-bottom: 1px solid rgb(144, 144, 144);
+                    background-color: rgb(238, 238, 238);
                 }
 
-                .editor__inputs-container {
-
-                    display: flex;
-                    flex-direction: column;
-                    gap: 20px;
-                    margin-top: 20px;
-
-                    .section-area__title {
-                        margin-bottom: 10px;
-                    }
-
-                    .editor__input-area {
-                        padding: 15px;
-                        display: flex;
-                        flex-direction: column;
-                        gap: 20px;
-                        border: 1px solid rgb(240, 240, 240);
-                        transition: 300ms ease;
-
-                        &:hover {
-                            border-top: 1px solid rgb(144, 144, 144);
-                            border-bottom: 1px solid rgb(144, 144, 144);
-                            background-color: rgb(238, 238, 238);
-                        }
-
-                        .input-area__title {
-                            font-weight: 500;
-                        }
-            
-                        .input-area__input-item {
-
-                            .input-item__label {
-                                font-weight: 500;
-                            }
-
-                            .input-item__input {
-                                border: none;
-                                padding: 10px;
-                                border-radius: 5px;
-                                margin-top: 10px;
-                                color: #777;
-                                border: 1px solid rgb(177, 177, 177);
-                            }
-
-                            .input-item__label--color {
-                                margin-right: 10px;
-                            }
-                            
-                            .input-item__description {
-                                font-size: 14px;
-                                margin: 5px 0;
-                            }
-
-                            .input-item__button {
-                                padding: 5px 10px;
-                                margin-top: 15px;
-                                background-color: rgb(0, 143, 215);
-                                color: #fff;
-                                border: none;
-                                cursor: pointer;
-                            }
-                        }   
-                    }
+                .input-item__label {
+                    font-weight: 500;
+                    width: 100%;
                 }
-            }
-            
-            .title-section, .button-section {
-                input {
-                    margin-top: 20px;
-                    width: 300px;
-                    height: 50px;
-                    padding: 20px;
-                    text-align: center;
+
+                .input-color {
+                    cursor: pointer;
+                    margin-top: 10px;
                 }
+
+                .input-url, .input-text, .text-area {
+                    border: none;
+                    padding: 10px;
+                    margin-top: 10px;
+                    color: #777;
+                    border: 1px solid rgb(177, 177, 177);
+                    width: 100%;
+                    font-family: inherit;
+                    font-size: 14px;
+                }     
             }
-            
         }
     }
+    
 
     .email-layout-container {
         width: 100%;
