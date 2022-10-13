@@ -346,7 +346,7 @@ export default {
             },
             bannerSection: {
                 image: {
-                    url: 'https://portaldogremista.com.br/wp-content/uploads/2019/06/thumb2-fc-gremio-4k-grunge-brazilian-seria-a-logo.jpg',
+                    url: 'https://github.com/alexandre-fb/pagina-com-conteudo-editavel-vue/blob/main/src/assets/banner-image.png?raw=true',
                     alt: '',
                     style: {
                         width: '100%', 
