@@ -9,7 +9,7 @@
             </div>
 
             <transition name="fade" mode="out-in">
-                <div class="editor-area__section editor-area__section--colors" v-if="activeEditor === ''" key="colors-section">
+                <div class="editor-area__section editor-area__section--colors" v-if="activeEditor === 'colors'" key="colors-section">
                     <h3 class="section__title">Cores</h3>
                     <div class="section__inputs-container">
                         
@@ -30,30 +30,16 @@
                         
                     </div>
                 </div>
-                   
-                <div class="editor-area__section editor-area__section--header" v-else-if="activeEditor === 'logoSection'" key="logo-section">
-                    <h3 class="section__title">Cabeçalho</h3>
-                    <div class="section__inputs-container">
-                        
-                        <div class="section__input-item">
-                            <label for="input-color" class="input-item__label">Selecione a cor:</label>
-                            <input type="color" name="input-color" id="input-color" class="input-color" v-model="logoSection.tr.style.backgroundColor">
-                        </div>
-                        
-                    </div>
-                </div>
 
                 <div class="editor-area__section editor-area__section--banner" v-else-if="activeEditor === 'bannerSection'" key="banner-section">
                     <h3 class="section__title">Imagem destaque</h3>
                     <div class="section__inputs-container">
                        
                         <div class="section__input-item">
-                            <div class="input-area__input-item">
-                                <label for="input-url-banner" class="input-item__label">Editar imagem:</label>
-                                <p class="input-item__description">Insira o link da imagem no campo abaixo.</p>
-                                <input type="url" name="input-url-banner" id="input-url-banner" class="input-url" v-model="bannerSection.tr.bgImageUrl">
-                                <button class="button-default" @click="handleChangeBannerBgImage">Adicionar</button>
-                            </div>
+                            <label for="input-url-banner" class="input-item__label">Editar imagem:</label>
+                            <p class="input-item__description">Insira o link da imagem no campo abaixo.</p>
+                            <input type="url" name="input-url-banner" id="input-url-banner" class="input-url" v-model="bannerSection.image.url">
+                            <button class="button-default" @click="handleChangeBannerBgImage">Adicionar</button>
                         </div>
                         
                     </div>
@@ -95,10 +81,56 @@
                             <label for="input-text-products-list-title" class="input-item__label">Editar título:</label>
                             <input type="text" name="input-text-products-list-title" id="input-text-products-list-title" class="input-text" v-model="productsListSection.title.content">
                         </div>
-
+                        
                         <div class="section__input-item" v-for="product in productsListSection.productsList" :key="product.id">
-                            <label for="input-text-products-list-title" class="input-item__label">{{`Nome do produto ${product.id}:`}}</label>
-                            <input type="text" name="input-text-products-list-title" id="input-text-products-list-title" class="input-text" v-model="productsListSection.productsList[product.id - 1].productData.name">
+                            <div class="collapse-title" :id="product.id" @click="handleCollapseClick">
+                                <h4 :id="product.id">{{`Produto ${product.id}`}}</h4>
+                                <ExpandIcon :id="product.id" :class="productsListSection.productsList[product.id - 1].isCollapsed ? 'isOpen' : 'isClosed'" />
+                            </div>
+                            <transition name="expand">
+                                <div class="collapse-content" v-show="productsListSection.productsList[product.id - 1].isCollapsed">
+                                    <div class="product-item-input">
+                                        <label for="input-list-image" class="input-item__label">Imagem:</label>
+                                        <p class="input-item__description">Insira o link da imagem no campo abaixo.</p>
+                                        <input type="url" name="input-list-image" id="input-list-image" class="input-url" v-model="productsListSection.productsList[product.id - 1].image.url">
+                                    </div>
+
+                                    <div class="product-item-input">
+                                        <label for="input-text-products-list-name" class="input-item__label">Nome:</label>
+                                        <input type="text" name="input-text-products-list-name" id="input-text-products-list-name" class="input-text" v-model="productsListSection.productsList[product.id - 1].productData.name">
+                                    </div>
+
+                                    <div class="product-item-input">
+                                        <label for="input-text-products-list-code" class="input-item__label">Código:</label>
+                                        <input type="text" name="input-text-products-list-code" id="input-text-products-list-code" class="input-text" v-model="productsListSection.productsList[product.id - 1].productData.name">
+                                    </div>
+
+                                    <div class="product-item-input">
+                                        <label for="input-text-products-list-description" class="input-item__label">Descrição:</label>
+                                        <textarea rows="5"  name="input-text-products-list-description" id="input-text-products-list-description" class="text-area" v-model="productsListSection.productsList[product.id - 1].productData.description" />
+                                    </div>
+
+                                    <div class="product-item-input">
+                                        <label for="input-text-products-list-link" class="input-item__label">Link:</label>
+                                        <input type="url" name="input-text-products-list-link" id="input-text-products-list-link" class="input-url" v-model="productsListSection.productsList[product.id - 1].productData.link.url">
+                                    </div>
+
+                                </div>
+                            </transition>
+                        </div>
+                        <div class="products-buttons-container">
+                            <button 
+                                class="button-default add-product-button" 
+                                @click="addProduct" 
+                                v-if="this.productsListSection.productsList.length < 5">
+                                Novo produto
+                            </button>
+                            <button 
+                                class="button-default remove-product-button" 
+                                @click="removeProduct" 
+                                v-if="this.productsListSection.productsList.length > 1">
+                                Remover
+                            </button>
                         </div>
                     </div>
                 </div>      
@@ -106,37 +138,40 @@
         </div>
 
         <div class="email-layout-container" id="email-layout">
+            <div 
+                class="colors"
+                @mouseover="handleColorsInteraction" 
+                @mouseleave="handleColorsInteraction"    
+            >
+                <span class="colors__title">Cores:</span>
+                <div class="color" :style="{ backgroundColor: primaryColor }"></div>  
+                <div class="color" :style="{ backgroundColor: secondaryColor }"></div>  
+                <div class="color" :style="{ backgroundColor: tertiaryColor }"></div>  
+                <transition name="fade">
+                    <div class="edit-box" @click="handleColorsInteraction" v-if="showEditColorsButton || activeEditor === 'colors'">
+                        <i class="edit-icon">
+                            <EditIcon />
+                        </i>
+                    </div>
+                </transition> 
+            </div>
             <table class="email-layout" border="0" align="center" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                     <td>
                         <table align="center" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
 
                             <tr class="logo-section" :style="logoSection.tr.style">
-                            <!-- <tr class="logo-section" 
-                                :style="logoSection.tr.style"
-                                @mouseover="handleLogoSectionInteraction" 
-                                @mouseleave="handleLogoSectionInteraction"
-                            > -->
                                 <td align="center" :style="logoSection.td.style">
                                     <img :src="logoImageUrl" alt="Logo Atlas">
                                 </td>
-                                <!-- <transition name="fade">
-                                    <div class="edit-box" @click="handleLogoSectionInteraction" v-if="showEditLogoSectionButton || activeEditor === 'logoSection'">
-                                        <i class="edit-icon">
-                                            <EditIcon />
-                                        </i>
-                                    </div>
-                                </transition> -->
                             </tr>
 
                             <tr class="banner-section" 
-                                :style="bannerSection.tr.style" 
                                 @mouseover="handleBannerSectionInteraction" 
                                 @mouseleave="handleBannerSectionInteraction"
                             >
-
-                                <td align="center" :style="bannerSection.td.style">
-                                    {{ bannerSection.td.content }}
+                                <td align="center" :style="bannerSection.style">
+                                    <img :src="bannerSection.image.url" :alt="bannerSection.image.alt" :style="bannerSection.image.style">
                                 </td>
 
                                 <transition name="fade">
@@ -251,25 +286,24 @@
                                     "
                                 >
                                     <div class="social-links" style="display: flex; gap: 10px; align-items: center;">
-                                        <i :style="footerSection.iconsStyle">
-                                            <FacebookIcon style="fill: #fff;" />
-                                        </i>
-                                        <i :style="footerSection.iconsStyle">
-                                            <InstagramIcon style="fill: #fff;" />
-                                        </i>
-                                        <i :style="footerSection.iconsStyle">
-                                            <YoutubeIcon style="fill: #fff;"/>
-                                        </i>
+                                        <a href="https://pt-br.facebook.com/pinceisatlasoficial/" target="_blank">
+                                            <i :style="footerSection.iconsStyle">
+                                                <FacebookIcon style="fill: #fff;" />
+                                            </i>
+                                        </a>
+                                        <a href="https://www.instagram.com/pinceisatlasoficial/" target="_blank">
+                                            <i :style="footerSection.iconsStyle">
+                                                <InstagramIcon style="fill: #fff;" />
+                                            </i>
+                                        </a>
+                                        <a href="https://www.youtube.com/user/pinceisatlasoficial" target="_blank">
+                                            <i :style="footerSection.iconsStyle">
+                                                <YoutubeIcon style="fill: #fff;"/>
+                                            </i>
+                                        </a>
                                         <span>/picenisatlasoficial | <a href="https://www.pinceisatlas.com.br" target="_blank" style="color: #fff; text-decoration: none;">www.pinceisatlas.com.br</a></span>
                                     </div>
                                     <img :src="logoImageUrl" alt="Logo Atlas" style="object-fit: contain; width: 130px;">
-                                    <transition name="fade">
-                                        <div class="edit-box" @click="handleBannerSectionInteraction" v-if="showEditBannerSectionButton || activeEditor === 'bannerSection'">
-                                            <i class="edit-icon">
-                                                <EditIcon />
-                                            </i>
-                                        </div>
-                                    </transition>
                                 </td>
                             </tr>
                         </table>
@@ -286,10 +320,11 @@ import EditIcon from './icons/edit-icon.vue'
 import FacebookIcon from './icons/facebook-icon.vue'
 import InstagramIcon from './icons/instagram-icon.vue'
 import YoutubeIcon from './icons/youtube-icon.vue'
+import ExpandIcon from './icons/expand-icon.vue'
 
 export default {
     name: 'Layout-1',
-    components: { EditIcon, FacebookIcon, InstagramIcon, YoutubeIcon },
+    components: { EditIcon, FacebookIcon, InstagramIcon, YoutubeIcon, ExpandIcon },
     data() {
         return {
             html: null,
@@ -310,27 +345,23 @@ export default {
                 },
             },
             bannerSection: {
-                tr: {
-                    bgImageUrl: 'https://raw.githubusercontent.com/alexandre-fb/pagina-com-conteudo-editavel-vue/main/src/assets/banner-image.png',
+                image: {
+                    url: 'https://portaldogremista.com.br/wp-content/uploads/2019/06/thumb2-fc-gremio-4k-grunge-brazilian-seria-a-logo.jpg',
+                    alt: '',
                     style: {
-                        backgroundImage: 'url(https://raw.githubusercontent.com/alexandre-fb/pagina-com-conteudo-editavel-vue/main/src/assets/banner-image.png)',
-                        backgroundPosition: 'center', 
-                        backgroundSize: 'cover', 
-                        backgroundRepeat: 'no-repeat',
-                        backgroundColor: '#D9D9D9',
-                        height: '450px',
-                        transition: '300ms ease'
+                        width: '100%', 
+                        objectFit: 'cover', 
+                        display: 'block',
+                        maxHeight: '400px',
                     }
-                }, 
-                td: {
-                    content: '',
-                    style: {
-                        color: '#fff',
-                        fontSize: '42px',
-                        fontWeight: '600',
-                        display: '',
-                    },
                 },
+                style: {
+                    backgroundColor: '#D9D9D9',
+                    height: '100%',
+                    transition: '300ms ease',
+                    maxHeight: '200px'
+                }
+                
             },
             descriptionSection: {
                 tr: {
@@ -446,22 +477,7 @@ export default {
                 productsList: [
                     {
                         id: 1,
-                        image: {
-                            url: 'https://github.com/alexandre-fb/pagina-com-conteudo-editavel-vue/blob/main/src/assets/product-image.png?raw=true',
-                            alt: 'Imagem do produto'
-                        },
-                        productData: {
-                            name: 'Lixadeira Roto-Orbital',
-                            code: 'AT1701',
-                            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum rutrum nunc, id faucibus erat ultrices in.',
-                            link: {
-                                text: 'Saiba +',
-                                url: 'http://www.google.com'
-                            }
-                        }
-                    },
-                    {
-                        id: 2,
+                        isCollapsed: false,
                         image: {
                             url: 'https://github.com/alexandre-fb/pagina-com-conteudo-editavel-vue/blob/main/src/assets/product-image.png?raw=true',
                             alt: 'Imagem do produto'
@@ -494,7 +510,7 @@ export default {
                     padding: '4px'
                 }
             },
-            showEditLogoSectionButton: false,
+            showEditColorsButton: false,
             showEditBannerSectionButton: false,
             showEditDescriptionSectionButton: false,
             showEditProductsListSectionButton: false,
@@ -517,6 +533,7 @@ export default {
             this.activeEditor = ''
             this.html = document.getElementById('email-layout')
             console.log(this.html)
+            console.log(this.productsListSection.productsList[0].isCollapsed)
         },
         showEditTitleButton(event) {
             console.log(event)
@@ -525,6 +542,15 @@ export default {
         },
         showEditButton(event) {
             event.type === 'mouseover' ? this.showEditBannerSectionButton = true :                this.showEditBannerSectionButton = false
+        },
+        handleColorsInteraction(event) {
+            if (event.type === 'mouseover') {
+                this.showEditColorsButton = true
+            } else if (event.type === 'mouseleave') {
+                this.showEditColorsButton = false
+            } else if (event.type === 'click') {
+                this.activeEditor = 'colors' 
+            }            
         },
         handleLogoSectionInteraction(event) {
             if (event.type === 'mouseover') {
@@ -565,6 +591,44 @@ export default {
                 this.activeEditor = 'productsListSection' 
             }            
         },
+        handleCollapseClick(event) {
+            console.log(event)
+            const index = event.target.id - 1
+
+            console.log(this.productsListSection.productsList[index].isCollapsed)
+            this.productsListSection.productsList[index].isCollapsed = !this.productsListSection.productsList[index].isCollapsed
+        },
+        addProduct() {
+            const idNewProduct = this.productsListSection.productsList.length + 1
+
+            let newProduct =  {
+                        id: idNewProduct,
+                        isCollapsed: false,
+                        image: {
+                            url: 'https://github.com/alexandre-fb/pagina-com-conteudo-editavel-vue/blob/main/src/assets/product-image.png?raw=true',
+                            alt: 'Imagem do produto'
+                        },
+                        productData: {
+                            name: 'Lixadeira Roto-Orbital',
+                            code: 'AT1701',
+                            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum rutrum nunc, id faucibus erat ultrices in.',
+                            link: {
+                                text: 'Saiba +',
+                                url: 'http://www.google.com'
+                            }
+                        }
+                    }
+
+            if(this.productsListSection.productsList.length < 5) {
+                this.productsListSection.productsList.push(newProduct)
+            } 
+        },
+        removeProduct() {
+            if (this.productsListSection.productsList.length > 1) {
+                this.productsListSection.productsList.pop()
+            }
+            
+        }
     }
 }
 </script>
@@ -574,9 +638,32 @@ export default {
 .fade-enter-active, .fade-leave-active {
   transition: opacity .2s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active em versões anteriores a 2.1.8 */ {
+.fade-enter, .fade-leave-to  {
   opacity: 0;
 }
+
+.expand-enter-active  {
+  transition: .3s ease;
+}
+
+.expand-leave-active {
+    transition: .2s ease;
+}
+.expand-enter, .expand-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.isOpen {
+    transition: .2s ease;
+    transform: none;
+}
+
+.isClosed {
+    transition: .3s ease-in-out;
+    transform: rotate(-90deg);
+}
+
 //=====end transitions
 
 //=====start edit box in section hover
@@ -629,6 +716,15 @@ tr {
         background-color: rgb(0, 109, 163); 
     }
 }
+
+.remove-product-button {
+    background-color: rgb(215, 0, 0);
+
+    &:hover {
+        background-color: rgb(163, 0, 0); 
+    }
+}
+
 
 .container-mail-editor {
     display: flex;
@@ -707,6 +803,41 @@ tr {
                     font-family: inherit;
                     font-size: 14px;
                 }     
+
+                .collapse-title {
+                    background-color: rgb(210, 210, 210);
+                    padding: 15px;
+                    text-align: center;
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+
+                    svg {
+                        width: 15px;
+                        fill: #777;
+                        position: absolute;
+                        left: 15px;
+                    }
+                }
+
+                .collapse-content {
+                    padding: 15px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .input-item__description {
+                    margin: 5px;
+                }
+            }
+
+            .products-buttons-container {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
             }
         }
     }
@@ -717,9 +848,32 @@ tr {
         overflow-y: scroll;
         padding: 30px;
         background-color: #f0f0f0;
+
+        .colors {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            width: 600px;
+            margin: 0 auto;
+            position: relative;
+
+            .colors__title {
+                margin-right: 15px;
+            }
+            
+            .color {
+                width: 30px;
+                height: 30px;
+            }
+        }
         
         .email-layout {
             width: 100%;
+        }
+
+        .footer-section {
+            max-width: 600px;
         }
     }
 }
