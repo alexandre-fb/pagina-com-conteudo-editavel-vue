@@ -9,7 +9,11 @@
             </div>
 
             <transition name="fade" mode="out-in">
-                <div class="editor-area__section editor-area__section--colors" v-if="activeEditor === 'colors'" key="colors-section">
+                <div class="editor-area__section editor-area__section--colors" v-if="activeEditor === ''" key="colors-section">
+                    <p class="section__title">Selecione a seção que deseja editar.</p>
+                </div>
+
+                <div class="editor-area__section editor-area__section--colors" v-else-if="activeEditor === 'colors'" key="colors-section">
                     <h3 class="section__title">Cores</h3>
                     <div class="section__inputs-container">
                         
@@ -36,7 +40,7 @@
                     <div class="section__inputs-container">
                        
                         <div class="section__input-item">
-                            <label for="input-url-banner" class="input-item__label">Editar imagem:</label>
+                            <label for="input-url-banner" class="input-item__label">Imagem:</label>
                             <p class="input-item__description">Insira o link da imagem no campo abaixo.</p>
                             <input type="url" name="input-url-banner" id="input-url-banner" class="input-url" v-model="bannerSection.image.url">
                             <button class="button-default" @click="handleChangeBannerBgImage">Adicionar</button>
@@ -50,23 +54,23 @@
                     <div class="section__inputs-container">
 
                         <div class="section__input-item">
-                            <label for="input-text-description-title" class="input-item__label">Editar título:</label>
+                            <label for="input-text-description-title" class="input-item__label">Título:</label>
                             <input type="text" name="input-text-description-title" id="input-text-description-title" class="input-text" v-model="descriptionSection.td.title.content">
                         </div>
 
                         <div class="section__input-item">
-                            <label for="input-text-description-text" class="input-item__label">Editar texto:</label>
+                            <label for="input-text-description-text" class="input-item__label">Texto:</label>
                             <textarea rows="7"  name="input-text-description-text" id="input-text-description-text" class="text-area" v-model="descriptionSection.td.paragraph.content" />
                         </div>
 
                         <div class="section__input-item">
-                            <label for="input-text-description-button-text" class="input-item__label">Editar texto do botão:</label>
+                            <label for="input-text-description-button-text" class="input-item__label">Texto do botão:</label>
                             <input type="text" name="input-text-description-button-text" id="input-text-description-button-text" class="input-text" v-model="descriptionSection.td.button.content">
                         </div>
 
                         <div class="section__input-item">
 
-                            <label for="input-text-description-button-link" class="input-item__label">Editar link do botão:</label>
+                            <label for="input-text-description-button-link" class="input-item__label">Link do botão:</label>
                             <input type="url" name="input-text-description-button-link" id="input-text-description-button-link" class="input-url" v-model="descriptionSection.td.button.link">
 
                         </div>
@@ -78,7 +82,7 @@
                     <div class="section__inputs-container">
                         
                         <div class="section__input-item">
-                            <label for="input-text-products-list-title" class="input-item__label">Editar título:</label>
+                            <label for="input-text-products-list-title" class="input-item__label">Título:</label>
                             <input type="text" name="input-text-products-list-title" id="input-text-products-list-title" class="input-text" v-model="productsListSection.title.content">
                         </div>
                         
@@ -102,7 +106,7 @@
 
                                     <div class="product-item-input">
                                         <label for="input-text-products-list-code" class="input-item__label">Código:</label>
-                                        <input type="text" name="input-text-products-list-code" id="input-text-products-list-code" class="input-text" v-model="productsListSection.productsList[product.id - 1].productData.name">
+                                        <input type="text" name="input-text-products-list-code" id="input-text-products-list-code" class="input-text" v-model="productsListSection.productsList[product.id - 1].productData.code">
                                     </div>
 
                                     <div class="product-item-input">
@@ -139,7 +143,7 @@
 
         <div class="email-layout-container" id="email-layout">
             <div 
-                class="colors"
+                class="edit-colors-section"
                 @mouseover="handleColorsInteraction" 
                 @mouseleave="handleColorsInteraction"    
             >
@@ -148,7 +152,7 @@
                 <div class="color" :style="{ backgroundColor: secondaryColor }"></div>  
                 <div class="color" :style="{ backgroundColor: tertiaryColor }"></div>  
                 <transition name="fade">
-                    <div class="edit-box" @click="handleColorsInteraction" v-if="showEditColorsButton || activeEditor === 'colors'">
+                    <div class="edit-box edit-box--colors" @click="handleColorsInteraction" v-if="showEditColorsButton || activeEditor === 'colors'">
                         <i class="edit-icon">
                             <EditIcon />
                         </i>
@@ -672,7 +676,6 @@ export default {
     position: absolute;
     right: 0px;
     top: 0px;
-    background-color: rgba(0, 0, 0, 0.1);
     height: 100%;
     width: 100%;
     border: 3px solid #fff;
@@ -680,7 +683,7 @@ export default {
     justify-content: flex-end;
     align-items: flex-start;
     cursor: pointer;
-    box-shadow: 0 0 10px #000;
+    box-shadow: 0 0 10px #909090;
     z-index: 5;
 
     .edit-icon {
@@ -693,7 +696,7 @@ export default {
         display: grid;
         place-items: center;
         border-radius: 3px;
-        box-shadow: 0 0 5px rgb(196, 196, 196);
+        box-shadow: 0 0 10px rgb(196, 196, 196);
         padding: 5px;
     }
 }
@@ -849,7 +852,7 @@ tr {
         padding: 30px;
         background-color: #f0f0f0;
 
-        .colors {
+        .edit-colors-section {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -857,6 +860,8 @@ tr {
             width: 600px;
             margin: 0 auto;
             position: relative;
+            width: fit-content;
+            margin-bottom: 20px;
 
             .colors__title {
                 margin-right: 15px;
