@@ -43,7 +43,6 @@
                             <label for="input-url-banner" class="input-item__label">Imagem:</label>
                             <p class="input-item__description">Insira o link da imagem no campo abaixo.</p>
                             <input type="url" name="input-url-banner" id="input-url-banner" class="input-url" v-model="bannerSection.image.url">
-                            <button class="button-default" @click="handleChangeBannerBgImage">Adicionar</button>
                         </div>
                         
                     </div>
@@ -87,7 +86,7 @@
                         </div>
                         
                         <div class="section__input-item" v-for="product in productsListSection.productsList" :key="product.id">
-                            <div class="collapse-title" :id="product.id" @click="handleCollapseClick">
+                            <div class="collapse-title" :id="product.id" @click="handleProductClick">
                                 <h4 :id="product.id">{{`Produto ${product.id}`}}</h4>
                                 <ExpandIcon :id="product.id" :class="productsListSection.productsList[product.id - 1].isCollapsed ? 'isOpen' : 'isClosed'" />
                             </div>
@@ -159,7 +158,7 @@
                     </div>
                 </transition> 
             </div>
-            <table class="email-layout" border="0" align="center" cellpadding="0" cellspacing="0" width="100%">
+            <table class="email-layout" border="0" align="center" cellpadding="0" cellspacing="0" width="100%" style="font-family: helvetica">
                 <tr>
                     <td>
                         <table align="center" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
@@ -539,14 +538,6 @@ export default {
             console.log(this.html)
             console.log(this.productsListSection.productsList[0].isCollapsed)
         },
-        showEditTitleButton(event) {
-            console.log(event)
-            event.isTrusted ? this.showEditTitle = true : false
-            console.log(this.showEditTitle)
-        },
-        showEditButton(event) {
-            event.type === 'mouseover' ? this.showEditBannerSectionButton = true :                this.showEditBannerSectionButton = false
-        },
         handleColorsInteraction(event) {
             if (event.type === 'mouseover') {
                 this.showEditColorsButton = true
@@ -554,15 +545,6 @@ export default {
                 this.showEditColorsButton = false
             } else if (event.type === 'click') {
                 this.activeEditor = 'colors' 
-            }            
-        },
-        handleLogoSectionInteraction(event) {
-            if (event.type === 'mouseover') {
-                this.showEditLogoSectionButton = true
-            } else if (event.type === 'mouseleave') {
-                this.showEditLogoSectionButton = false
-            } else if (event.type === 'click') {
-                this.activeEditor = 'logoSection' 
             }            
         },
         handleBannerSectionInteraction(event) {
@@ -573,9 +555,6 @@ export default {
             } else if (event.type === 'click') {
                 this.activeEditor = 'bannerSection' 
             }            
-        },
-        handleChangeBannerBgImage() {
-            this.bannerSection.tr.style.backgroundImage = `url(${this.bannerSection.tr.bgImageUrl})`
         },
         handleDescriptionSectionInteraction(event) {
             if (event.type === 'mouseover') {
@@ -595,11 +574,8 @@ export default {
                 this.activeEditor = 'productsListSection' 
             }            
         },
-        handleCollapseClick(event) {
-            console.log(event)
+        handleProductClick(event) {
             const index = event.target.id - 1
-
-            console.log(this.productsListSection.productsList[index].isCollapsed)
             this.productsListSection.productsList[index].isCollapsed = !this.productsListSection.productsList[index].isCollapsed
         },
         addProduct() {
@@ -834,6 +810,8 @@ tr {
 
                 .input-item__description {
                     margin: 5px;
+                    font-size: 14px;
+                    font-style: italic;
                 }
             }
 
@@ -883,5 +861,5 @@ tr {
     }
 }
     
-</style>>
+</style>
 
